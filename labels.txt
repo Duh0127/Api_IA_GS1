@@ -1,0 +1,15 @@
+0 Arraia-Jamanta
+1 Baleia-Jubarte
+2 Boto-Cor-de-Rosa
+3 Camarão-Rosa
+4 Caranguejo-Azul
+5 Cavalo-Marinho
+6 Coral-Cérebro
+7 Estrela-Do-Mar
+8 Golfinho-Rotador
+9 Lagosta
+10 Tartaruga-Verde
+11 Tubarão-Martelo
+12 Raia-Manta
+13 Polvo
+14 Peixe-Palhaço
