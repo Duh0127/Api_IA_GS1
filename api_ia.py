@@ -1,10 +1,16 @@
 import os
-from flask import Flask, request, jsonify, send_from_directory
-from werkzeug.utils import secure_filename
-import tensorflow as tf
+
 import numpy as np
+import tensorflow as tf
+from flask import Flask, jsonify, request, send_from_directory
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+
+# ESTÁ OCORRENDO UM ERRO NA COMPATIBILIDADE DE VERSÕES ENTRE O TENSORFLOW, KERAS E O NUMPY
+# Apenas consegui rodar o meu projeto com as versões mais antigas dessas bibliotecas (tensorflow==2.12.0, numpy==1.23.5)
+
+# Caso for rodar no replit, abrir o SHELL e digitar:  [ pip install tensorflow==2.12.0 ]  antes de executar o código
 
 print("Versão do TensorFlow:", tf.__version__)
 print("Versao do numpy: ", np.__version__)
@@ -17,11 +23,12 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
 # Carregar o modelo Keras (.h5)
-model = tf.keras.models.load_model('keras_model.h5')
+model = tf.keras.models.load_model("keras_model.h5")
 
 # Carregar os rótulos
-with open('labels.txt', 'r') as file:
+with open("labels.txt", "r", encoding="utf-8") as file:
     labels = file.read().splitlines()
+
 
 # Função para pré-processamento de imagem
 def preprocess_image(image_path):
@@ -29,6 +36,7 @@ def preprocess_image(image_path):
     img_array = tf.keras.preprocessing.image.img_to_array(img)
     img_array = tf.keras.applications.mobilenet_v2.preprocess_input(img_array)
     return img_array
+
 
 # Função para fazer predições
 def predict(image_path):
@@ -39,6 +47,7 @@ def predict(image_path):
     confidence = predictions[0][predicted_class]
     return labels[predicted_class], confidence
 
+
 # função para verificar se a extensão do arquivo é permitida
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -47,6 +56,7 @@ def allowed_file(filename):
 @app.route("/")
 def hello_world():
     return "Hello, World!"
+
 
 # rota para salvar a imagem enviada no formato FORMDATA com o nome 'file'
 @app.route("/predict-image", methods=["POST"])
@@ -88,4 +98,4 @@ if __name__ == "__main__":
     # Cria o diretório de upload se não existir
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=8080)
